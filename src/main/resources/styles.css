@@ -1,0 +1,62 @@
+/* --- TABLE STYLES --- */
+.table-view .table-cell {
+    -fx-border-color: transparent;
+    -fx-padding: 2 0 2 10px;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #93f9b911;
+    -fx-text-background-color: red;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #93f9b911;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #1dbbdd11;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em;
+}
+
+/* --- LAYOUT CONTAINERS --- */
+.main-layout {
+    -fx-spacing: 10;
+}
+
+.left-vbox {
+    -fx-padding: 10;
+    -fx-spacing: 10;
+    -fx-background-color: #e6f7ff;
+    -fx-background-radius: 20;
+}
+
+.right-vbox {
+    -fx-spacing: 10;
+    -fx-padding: 10;
+}
+
+.toggle-box {
+    -fx-padding: 10;
+    -fx-spacing: 10;
+    -fx-background-color: #d6e9ff;
+    -fx-background-radius: 20;
+}
+
+/* --- TEXT AREAS / DECISION TREE --- */
+.decision-tree-area {
+    -fx-font-family: "Courier New";
+    -fx-font-size: 14px;
+}
+
+/* --- BUTTONS --- */
+.predict-button {
+    -fx-background-color: linear-gradient(#4a90e2, #007aff);
+    -fx-background-radius: 30;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 8 16 8 16;
+}
