@@ -203,22 +203,42 @@ public class DecisionTree {
     }
 
     private String treeToString(TreeNode node, int depth) {
-        // If leaf, return label
+        return treeToString(node, depth, "");
+    }
+    
+    private String treeToString(TreeNode node, int depth, String prefix) {
+        StringBuilder sb = new StringBuilder();
+    
+        // If it's a leaf, display the label.
         if (node.isLeaf()) {
-            return indent(depth) + " -> " + node.getLabel() + "\n";
+            sb.append(prefix)
+              .append("|-- ")
+              .append(node.getLabel())
+              .append("\n");
+            return sb.toString();
         }
-        // Otherwise, for each child...
-        StringBuilder sb = new StringBuilder(indent(depth) + "[Split on: " + node.getSplittingAttribute() + "]\n");
+    
+        // If it's an internal node, display the splitting attribute.
+        sb.append(prefix)
+          .append("|-- [Split on: ")
+          .append(node.getSplittingAttribute())
+          .append("]\n");
+    
+        // Prepare a new prefix for child nodes.
+        String childPrefix = prefix + "|   ";
+    
+        // Iterate over children.
         for (Map.Entry<String, TreeNode> entry : node.getChildren().entrySet()) {
-            sb.append(indent(depth + 1))
-                    .append("Value = ")
-                    .append(entry.getKey())
-                    .append(":\n")
-                    .append(treeToString(entry.getValue(), depth + 2));
+            sb.append(childPrefix)
+              .append("Value = ")
+              .append(entry.getKey())
+              .append("\n")
+              .append(treeToString(entry.getValue(), depth + 1, childPrefix));
         }
+    
         return sb.toString();
     }
-
+    
     private String indent(int depth) {
         // Indent with e.g. two spaces per depth
         return "  ".repeat(depth);
