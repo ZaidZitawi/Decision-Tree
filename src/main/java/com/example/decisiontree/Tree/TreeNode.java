@@ -1,6 +1,8 @@
 package com.example.decisiontree.Tree;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,7 +13,7 @@ public class TreeNode {
     // If this node is a leaf, store the classification here (e.g., "EDIBLE" or "POISONOUS").
     private String label;
 
-    // If this node is not a leaf, store the attribute used for splitting (e.g., "CAP-SHAPE").
+    // If this node is not a leaf, store the attribute used for splitting .
     private String splittingAttribute;
 
     // Child nodes for each possible value of the splitting attribute (e.g., "CONVEX", "BELL", etc.).
@@ -28,7 +30,6 @@ public class TreeNode {
         this.children = children;
     }
 
-    // --- GETTERS & SETTERS ---
 
     public String getLabel() {
         return label;
@@ -54,10 +55,16 @@ public class TreeNode {
         this.children = children;
     }
 
-    /**
-     * Add a child node for a particular attribute value.
-     */
+
     public void addChild(String attributeValue, TreeNode childNode) {
         this.children.put(attributeValue, childNode);
+    }
+
+    public List<Map.Entry<String, TreeNode>> getChildrenList() {
+        return new ArrayList<>(children.entrySet());
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }
