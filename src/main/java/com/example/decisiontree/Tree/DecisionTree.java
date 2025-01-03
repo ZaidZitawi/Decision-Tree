@@ -1,88 +1,110 @@
 package com.example.decisiontree.Tree;
 
 import com.example.decisiontree.DataSet.Mushroom;
-import com.example.decisiontree.Metrics.InformationGainCalculator; // <-- Use your metrics
-import com.example.decisiontree.Metrics.EntropyCalculator;         // If you need direct entropy usage
+import com.example.decisiontree.Metrics.GainCalculator;
+import com.example.decisiontree.Metrics.EntropyCalculator;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-/**
- * Manages the building of a decision tree and provides a predict() method.
- */
 public class DecisionTree {
 
-    private TreeNode root;  // The root node of our decision tree
-    // We can define a max depth as a constant or pass it via constructor
+    private TreeNode root;
     private static final int MAX_DEPTH = 7;
 
-    /**
-     * Build the tree from training data.
-     *
-     * @param data           The training records (70% split).
-     * @param attributes     The list of attribute names to consider splitting on
-     *                       (e.g., CAP-SHAPE, ODOR, etc.).
-     * @param useGainRatio   If true, use gain ratio. If false, use info gain.
-     */
-    public void buildTree(List<Mushroom> data, List<String> attributes, boolean useGainRatio) {
-        // Start recursion at depth = 0
-        this.root = buildRecursive(data, attributes, useGainRatio, 0);
+    public static class SplitMetrics {
+        private Map<String, Double> gains;
+        private Map<String, Double> entropies;
+
+        public SplitMetrics(Map<String, Double> gains, Map<String, Double> entropies) {
+            this.gains = gains;
+            this.entropies = entropies;
+        }
+
+        public Map<String, Double> getGains() {
+            return gains;
+        }
+
+        public Map<String, Double> getEntropies() {
+            return entropies;
+        }
     }
 
-    /**
-     * Recursively builds the tree with depth tracking.
-     */
+    public void buildTree(List<Mushroom> data, List<String> attributes, boolean useGainRatio) {
+        this.root = buildRecursive(data, attributes, useGainRatio, 0, null);
+    }
+
+    public void buildTreeWithMetrics(
+            List<Mushroom> data,
+            List<String> attributes,
+            boolean useGainRatio,
+            BiConsumer<Integer, SplitMetrics> metricsCallback
+    ) {
+        this.root = buildRecursive(data, attributes, useGainRatio, 0, metricsCallback);
+    }
+
     private TreeNode buildRecursive(
             List<Mushroom> data,
             List<String> attributes,
             boolean useGainRatio,
-            int currentDepth
+            int currentDepth,
+            BiConsumer<Integer, SplitMetrics> metricsCallback
     ) {
-        // Base case 1: If all records are EDIBLE, return leaf node with label "EDIBLE".
         if (allEdible(data)) {
             return new TreeNode("EDIBLE");
         }
-        // Base case 2: If all records are POISONOUS, return leaf node with label "POISONOUS".
         if (allPoisonous(data)) {
             return new TreeNode("POISONOUS");
         }
-        // Base case 3: If no more attributes to split on OR we've reached max depth, pick majority label.
         if (attributes.isEmpty() || currentDepth >= MAX_DEPTH) {
             return new TreeNode(majorityLabel(data));
         }
 
-        // Otherwise, pick the best attribute using Info Gain or Gain Ratio
-        String bestAttribute = pickBestAttribute(data, attributes, useGainRatio);
+        Map<String, Double> attributeGains = new HashMap<>();
+        for (String attribute : attributes) {
+            double gain = useGainRatio
+                    ? GainCalculator.calculateGainRatio(data, attribute)
+                    : GainCalculator.calculateInfoGain(data, attribute);
+            attributeGains.put(attribute, gain);
+        }
 
-        // If for some reason we can't find a best attribute, fallback to leaf
+        Map<String, Double> attributeEntropies = new HashMap<>();
+        for (String attribute : attributes) {
+            Map<String, Double> entropies = EntropyCalculator.calculateAttributeEntropies(data, attribute);
+            double averageEntropy = entropies.values().stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+            attributeEntropies.put(attribute, averageEntropy);
+        }
+
+        if (metricsCallback != null) {
+            int splitPhase = currentDepth + 1;
+            SplitMetrics metrics = new SplitMetrics(attributeGains, attributeEntropies);
+            metricsCallback.accept(splitPhase, metrics);
+        }
+
+        String bestAttribute = selectBestAttribute(attributeGains);
+
         if (bestAttribute == null) {
             return new TreeNode(majorityLabel(data));
         }
 
-        // Create an internal node with that attribute
-        TreeNode node = new TreeNode(null); // Not a leaf, so label is null
+        TreeNode node = new TreeNode(null);
         node.setSplittingAttribute(bestAttribute);
 
-        // Partition data based on the best attribute
         Map<String, List<Mushroom>> partitions = partitionData(data, bestAttribute);
 
-        // Remove the chosen attribute from the list for child splits
         List<String> remainingAttributes = attributes.stream()
                 .filter(attr -> !attr.equals(bestAttribute))
                 .collect(Collectors.toList());
 
-        // For each value of that attribute, build a subtree
         for (Map.Entry<String, List<Mushroom>> entry : partitions.entrySet()) {
             String attributeValue = entry.getKey();
             List<Mushroom> subset = entry.getValue();
 
             if (subset.isEmpty()) {
-                // If no records for this branch, create a leaf with majority label
                 node.addChild(attributeValue, new TreeNode(majorityLabel(data)));
             } else {
-                // Recursively build the subtree, increasing depth
-                TreeNode child = buildRecursive(subset, remainingAttributes, useGainRatio, currentDepth + 1);
+                TreeNode child = buildRecursive(subset, remainingAttributes, useGainRatio, currentDepth + 1, metricsCallback);
                 node.addChild(attributeValue, child);
             }
         }
@@ -90,7 +112,68 @@ public class DecisionTree {
         return node;
     }
 
-    // --- Helpers: allEdible, allPoisonous, majorityLabel, etc. ---
+    private String selectBestAttribute(Map<String, Double> attributeGains) {
+        return attributeGains.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey).orElse(null);
+    }
+
+    private Map<String, List<Mushroom>> partitionData(List<Mushroom> data, String attribute) {
+        return data.stream().collect(
+                Collectors.groupingBy(record -> getAttributeValue(record, attribute))
+        );
+    }
+
+    private String getAttributeValue(Mushroom record, String attribute) {
+        switch (attribute.toUpperCase()) {
+            case "CAP-SHAPE":
+                return record.getCapShape();
+            case "CAP-SURFACE":
+                return record.getCapSurface();
+            case "CAP-COLOR":
+                return record.getCapColor();
+            case "BRUISES":
+                return record.getBruises();
+            case "ODOR":
+                return record.getOdor();
+            case "GILL-ATTACHMENT":
+                return record.getGillAttachment();
+            case "GILL-SPACING":
+                return record.getGillSpacing();
+            case "GILL-SIZE":
+                return record.getGillSize();
+            case "GILL-COLOR":
+                return record.getGillColor();
+            case "STALK-SHAPE":
+                return record.getStalkShape();
+            case "STALK-ROOT":
+                return record.getStalkRoot();
+            case "STALK-SURFACE-ABOVE-RING":
+                return record.getStalkSurfaceAboveRing();
+            case "STALK-SRFACE-UNDER-RING":
+                return record.getStalkSurfaceBelowRing();
+            case "STALK-COLOR-ABOVE-RING":
+                return record.getStalkColorAboveRing();
+            case "STALK-COLOR-BELOW-RING":
+                return record.getStalkColorBelowRing();
+            case "VEIL-TYPE":
+                return record.getVeilType();
+            case "VEIL-COLOR":
+                return record.getVeilColor();
+            case "RING-NUMBER":
+                return record.getRingNumber();
+            case "RING-TYPE":
+                return record.getRingType();
+            case "SPORE-PRINT-COLOR":
+                return record.getSporePrintColor();
+            case "POPULATION":
+                return record.getPopulation();
+            case "HABITAT":
+                return record.getHabitat();
+            default:
+                return "";
+        }
+    }
 
     private boolean allEdible(List<Mushroom> data) {
         return data.stream().allMatch(Mushroom::isEdible);
@@ -106,122 +189,50 @@ public class DecisionTree {
         return (edibleCount >= poisonousCount) ? "EDIBLE" : "POISONOUS";
     }
 
-    /**
-     * Select the attribute with the highest Info Gain or Gain Ratio.
-     */
-    private String pickBestAttribute(List<Mushroom> data, List<String> attributes, boolean useGainRatio) {
-        double bestScore = Double.NEGATIVE_INFINITY;
-        String bestAttribute = null;
-
-        for (String attr : attributes) {
-            double score;
-            if (useGainRatio) {
-                score = InformationGainCalculator.calculateGainRatio(data, attr);
-            } else {
-                score = InformationGainCalculator.calculateInfoGain(data, attr);
-            }
-            if (score > bestScore) {
-                bestScore = score;
-                bestAttribute = attr;
-            }
-        }
-
-        return bestAttribute;
-    }
-
-    /**
-     * Groups records by the given attribute’s value.
-     */
-    private Map<String, List<Mushroom>> partitionData(List<Mushroom> data, String attribute) {
-        return data.stream().collect(
-                Collectors.groupingBy(record -> getAttributeValue(record, attribute))
-        );
-    }
-
-    /**
-     * Reflection or if-else logic to fetch the attribute value from the record.
-     * For example, if attribute = "ODOR", return record.getOdor().
-     */
-    private String getAttributeValue(Mushroom record, String attribute) {
-        switch (attribute.toUpperCase()) {
-            case "CAP-SHAPE": return record.getCapShape();
-            case "CAP-SURFACE": return record.getCapSurface();
-            case "CAP-COLOR": return record.getCapColor();
-            case "BRUISES": return record.getBruises();
-            case "ODOR": return record.getOdor();
-            case "GILL-ATTACHMENT": return record.getGillAttachment();
-            case "GILL-SPACING": return record.getGillSpacing();
-            case "GILL-SIZE": return record.getGillSize();
-            case "GILL-COLOR": return record.getGillColor();
-            case "STALK-SHAPE": return record.getStalkShape();
-            case "STALK-ROOT": return record.getStalkRoot();
-            case "STALK-SURFACE-ABOVE-RING": return record.getStalkSurfaceAboveRing();
-            case "STALK-SRFACE-UNDER-RING": return record.getStalkSurfaceBelowRing();
-            case "STALK-COLOR-ABOVE-RING": return record.getStalkColorAboveRing();
-            case "STALK-COLOR-BELOW-RING": return record.getStalkColorBelowRing();
-            case "VEIL-TYPE": return record.getVeilType();
-            case "VEIL-COLOR": return record.getVeilColor();
-            case "RING-NUMBER": return record.getRingNumber();
-            case "RING-TYPE": return record.getRingType();
-            case "SPORE-PRINT-COLOR": return record.getSporePrintColor();
-            case "POPULATION": return record.getPopulation();
-            case "HABITAT": return record.getHabitat();
-            default: return "";
-        }
-    }
-
-    /**
-     * Predict a single new mushroom record (from user input on the UI).
-     */
     public String predict(Mushroom record) {
-        // Start at root and traverse down the tree
         TreeNode currentNode = root;
         while (!currentNode.isLeaf()) {
             String attr = currentNode.getSplittingAttribute();
             String value = getAttributeValue(record, attr);
 
-            // If the child doesn't exist (unseen attribute value), break & return majority or "unknown"
             if (!currentNode.getChildren().containsKey(value)) {
                 return majorityLabelFallback();
             }
             currentNode = currentNode.getChildren().get(value);
         }
-        return currentNode.getLabel();  // "EDIBLE" or "POISONOUS"
+        return currentNode.getLabel();
     }
 
     private String majorityLabelFallback() {
-        // If we reach an unknown path, we can guess or default:
-        return "EDIBLE"; // or "POISONOUS"
+        return "EDIBLE";
     }
 
-    /**
-     * Generates a string representation of the tree that you can display
-     * in the UI's decisionTreeArea. This is a simple text-based approach.
-     */
+    @Override
     public String toString() {
-        return treeToString(root, 0);
+        return treeToString(root, "", true);
     }
 
-    private String treeToString(TreeNode node, int depth) {
-        // If leaf, return label
+    private String treeToString(TreeNode node, String prefix, boolean isTail) {
+        StringBuilder sb = new StringBuilder();
+
         if (node.isLeaf()) {
-            return indent(depth) + " -> " + node.getLabel() + "\n";
-        }
-        // Otherwise, for each child...
-        StringBuilder sb = new StringBuilder(indent(depth) + "[Split on: " + node.getSplittingAttribute() + "]\n");
-        for (Map.Entry<String, TreeNode> entry : node.getChildren().entrySet()) {
-            sb.append(indent(depth + 1))
-                    .append("Value = ")
-                    .append(entry.getKey())
-                    .append(":\n")
-                    .append(treeToString(entry.getValue(), depth + 2));
-        }
-        return sb.toString();
-    }
+            sb.append(prefix).append(isTail ? "└── " : "├── ").append("Leaf: ").append(node.getLabel()).append("\n");
+        } else {
+            sb.append(prefix).append(isTail ? "└── " : "├── ").append("[Split on: ").append(node.getSplittingAttribute()).append("]\n");
+            List<Map.Entry<String, TreeNode>> children = node.getChildrenList();
 
-    private String indent(int depth) {
-        // Indent with e.g. two spaces per depth
-        return "  ".repeat(depth);
+            for (int i = 0; i < children.size(); i++) {
+                Map.Entry<String, TreeNode> entry = children.get(i);
+                boolean last = (i == children.size() - 1);
+                String newPrefix = prefix + (isTail ? "    " : "│   ");
+                sb.append(newPrefix)
+                        .append(last ? "└── " : "├── ")
+                        .append("Value = ").append(entry.getKey()).append(":\n");
+                sb.append(treeToString(entry.getValue(), newPrefix + (last ? "    " : "│   "), true));
+            }
+        }
+
+        return sb.toString();
     }
 
     public TreeNode getRoot() {

@@ -4,24 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8570a61-9f8a-4f81-988f-71a4a57669e1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/DataSet/Mushroom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/DataSet/MushroomDataSet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Metrics/AccuracyMetrics.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Metrics/EntropyCalculator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Metrics/GainRatioCalculator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Metrics/InformationGainCalculator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/MushroomDecisionTree.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Tree/DecisionTree.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Tree/TreeNode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mushroom.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/styles.css" afterDir="false" />
+    <list default="true" id="c8570a61-9f8a-4f81-988f-71a4a57669e1" name="Changes" comment="version 2">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Metrics/GainCalculator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/HelloApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/decisiontree/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/decisiontree/hello-view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/DataSet/Mushroom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/DataSet/Mushroom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Metrics/AccuracyMetrics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Metrics/AccuracyMetrics.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Metrics/EntropyCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Metrics/EntropyCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Metrics/GainRatioCalculator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Metrics/InformationGainCalculator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/MushroomDecisionTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/MushroomDecisionTree.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Tree/DecisionTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Tree/DecisionTree.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Tree/TreeNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/decisiontree/Tree/TreeNode.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +30,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MavenImportPreferences">
@@ -57,30 +55,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.DatasetLoader.executor": "Run",
-    "Application.HelloApplication.executor": "Run",
-    "Application.MushroomDecisionTree.executor": "Run",
-    "Application.MushroomDecisionTreeUI.executor": "Run",
-    "Application.TreePredictor.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "database.data.extractors.current.export.id": "CSV-Groovy.csv.groovy",
-    "database.data.extractors.current.id": "CSV-Groovy.csv.groovy",
-    "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/DELL/Idea_Projects_Ultimate/LL1_Predictive_Parser",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.DatasetLoader.executor&quot;: &quot;Run&quot;,
+    &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MushroomDecisionTree.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MushroomDecisionTreeUI.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TreePredictor.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;CSV-Groovy.csv.groovy&quot;,
+    &quot;database.data.extractors.current.id&quot;: &quot;CSV-Groovy.csv.groovy&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Zaid's-Branch&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/DELL/Idea_Projects_Ultimate/LL1_Predictive_Parser&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\DELL\Idea Projects Ultimate\Decision-Tree\src\main\resources" />
@@ -144,12 +142,27 @@
       <updated>1735665755875</updated>
       <workItem from="1735665756933" duration="10622000" />
       <workItem from="1735683542853" duration="3044000" />
-      <workItem from="1735734013818" duration="16601000" />
+      <workItem from="1735734013818" duration="26466000" />
+      <workItem from="1735848294270" duration="2775000" />
+      <workItem from="1735901963106" duration="13297000" />
     </task>
+    <task id="LOCAL-00001" summary="version 2">
+      <option name="closed" value="true" />
+      <created>1735755884317</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1735755884317</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="version 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 2" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>

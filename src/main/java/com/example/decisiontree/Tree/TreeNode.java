@@ -1,6 +1,8 @@
 package com.example.decisiontree.Tree;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,5 +61,9 @@ public class TreeNode {
      */
     public void addChild(String attributeValue, TreeNode childNode) {
         this.children.put(attributeValue, childNode);
+    }
+
+    public List<Map.Entry<String, TreeNode>> getChildrenList() {
+        return new ArrayList<>(children.entrySet());
     }
 }
