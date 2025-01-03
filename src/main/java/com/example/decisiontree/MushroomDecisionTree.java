@@ -4,10 +4,8 @@ import com.example.decisiontree.DataSet.Mushroom;
 import com.example.decisiontree.DataSet.MushroomDataSet;
 import com.example.decisiontree.Metrics.AccuracyMetrics;
 import com.example.decisiontree.Tree.DecisionTree;
-import com.example.decisiontree.Tree.DecisionTree.SplitMetrics;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,7 +14,6 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -269,7 +266,7 @@ public class MushroomDecisionTree extends Application {
     private boolean loadData() {
         try {
             dataSet.loadData(Paths.get(getClass().getResource("/mushroom.csv").toURI()));
-            dataSet.splitTrainingTest(0.7);
+            dataSet.splitTrainingTest(0.1);
             trainingData = dataSet.getTrainingData();
             testData = dataSet.getTestData();
             return true;

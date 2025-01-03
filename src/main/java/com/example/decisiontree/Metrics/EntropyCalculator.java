@@ -40,7 +40,7 @@ public class EntropyCalculator {
             return attributeEntropies;
         }
 
-        Map<String, List<Mushroom>> partitions = partitionByAttribute(data, attribute);
+        Map<String, List<Mushroom>> partitions = Splitter.partitionByAttribute(data, attribute);
 
         for (Map.Entry<String, List<Mushroom>> entry : partitions.entrySet()) {
             String attributeValue = entry.getKey();
@@ -51,62 +51,6 @@ public class EntropyCalculator {
         }
 
         return attributeEntropies;
-    }
-
-    private static Map<String, List<Mushroom>> partitionByAttribute(List<Mushroom> data, String attribute) {
-        return data.stream()
-                .collect(Collectors.groupingBy(record -> getAttributeValue(record, attribute)));
-    }
-
-    private static String getAttributeValue(Mushroom record, String attribute) {
-        switch (attribute.toUpperCase()) {
-            case "CAP-SHAPE":
-                return record.getCapShape();
-            case "CAP-SURFACE":
-                return record.getCapSurface();
-            case "CAP-COLOR":
-                return record.getCapColor();
-            case "BRUISES":
-                return record.getBruises();
-            case "ODOR":
-                return record.getOdor();
-            case "GILL-ATTACHMENT":
-                return record.getGillAttachment();
-            case "GILL-SPACING":
-                return record.getGillSpacing();
-            case "GILL-SIZE":
-                return record.getGillSize();
-            case "GILL-COLOR":
-                return record.getGillColor();
-            case "STALK-SHAPE":
-                return record.getStalkShape();
-            case "STALK-ROOT":
-                return record.getStalkRoot();
-            case "STALK-SURFACE-ABOVE-RING":
-                return record.getStalkSurfaceAboveRing();
-            case "STALK-SRFACE-UNDER-RING":
-                return record.getStalkSurfaceBelowRing();
-            case "STALK-COLOR-ABOVE-RING":
-                return record.getStalkColorAboveRing();
-            case "STALK-COLOR-BELOW-RING":
-                return record.getStalkColorBelowRing();
-            case "VEIL-TYPE":
-                return record.getVeilType();
-            case "VEIL-COLOR":
-                return record.getVeilColor();
-            case "RING-NUMBER":
-                return record.getRingNumber();
-            case "RING-TYPE":
-                return record.getRingType();
-            case "SPORE-PRINT-COLOR":
-                return record.getSporePrintColor();
-            case "POPULATION":
-                return record.getPopulation();
-            case "HABITAT":
-                return record.getHabitat();
-            default:
-                return "";
-        }
     }
 
     private static double log2(double value) {
